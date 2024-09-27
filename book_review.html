@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>本のレビュー一覧</title>
+    <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="book_review.css">
+    <link rel="stylesheet" href="style/header.css">
+    <link rel="stylesheet" href="style/footer.css">
+    <script type="text/javascript" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <script src="script/main.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="header-left">
+            <i class="fa-solid fa-book fa-3x" onclick="redirectToUserPage()"></i>
+            <a href="add_book.html">本を追加する</a>
+            <a href="post_review.html">レビューを投稿する</a>
+            <a href="post_answer.html">解答を投稿する</a>
+            <a href="disp_review.html">レビューを見る</a>
+            <a href="disp_answer.html">解答を見る</a>
+        </div>
+        <div class="header-right">
+            <a href="index.php?action=logout" onclick="return confirmLogout();">ログアウト</a>
+        </div>
+    </header>
+
+    <h1>本のレビュー一覧</h1>
+    <?php
+        // データベース設定
+        require_once("db_password.php");
+
+        session_start();
+        $name = isset($_SESSION["username"]) ? $_SESSION["username"] : null; // セッションからユーザー名を取得
+
+        // クエリパラメータからbookIDを取得
+        $bookID = isset($_GET['bookID']) ? $_GET['bookID'] : '';
+
+        // いいね処理
+        if (isset($_POST['like']) && $name) {
+            $review_id = $_POST['review_id'];
+
+            // 既にいいねしているか確認
+            $sql = 'SELECT * FROM LIKES WHERE user_id=:user_id AND post_id=:review_id';
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':user_id', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':review_id', $review_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $like = $stmt->fetch();
+
+            if ($like) {
+                // いいねを取り消し
+                $sql = 'DELETE FROM LIKES WHERE id=:id';
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':id', $like['id'], PDO::PARAM_INT);
+                $stmt->execute();
+
+                // 投稿のいいね数を減らす
+                $sql = 'UPDATE DB6 SET good = good - 1 WHERE id = :review_id';
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':review_id', $review_id, PDO::PARAM_INT);
+                $stmt->execute();
+            } else {
+                // いいねを追加
+                $sql = 'INSERT INTO LIKES (user_id, post_id, liked) VALUES (:user_id, :review_id, 1)';
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':user_id', $name, PDO::PARAM_STR);
+                $stmt->bindParam(':review_id', $review_id, PDO::PARAM_INT);
+                $stmt->execute();
+
+                // 投稿のいいね数を増やす
+                $sql = 'UPDATE DB6 SET good = good + 1 WHERE id = :review_id';
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':review_id', $review_id, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+        }
+
+        // 指定されたbookIDに関するレビュー一覧を取得
+        $sql = 'SELECT * FROM DB6 WHERE bookID = :bookID';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':bookID', $bookID, PDO::PARAM_INT);
+        $stmt->execute();
+        $reviews = $stmt->fetchAll();
+
+        echo '<table border="1">
+        <tr>
+        <th>投稿者</th>
+        <th>レビュー内容</th>
+        <th>いいねの数</th>
+        <th>操作</th>
+        </tr>';
+
+        foreach ($reviews as $review) {
+            echo '<tr>';
+            echo '<td>' . htmlspecialchars($review["name"]) . '</td>';
+            echo '<td>' . htmlspecialchars($review["review"]) . '</td>';
+            echo '<td>' . htmlspecialchars($review["good"]) . '</td>';
+            echo '<td>';
+            if ($name) {
+                echo '<form action="" method="post">';
+                echo '<input type="hidden" name="review_id" value="' . htmlspecialchars($review["id"]) . '">';
+                echo '<input type="submit" name="like" value="いいね">';
+                echo '</form>';
+            } else {
+                echo 'いいねをするには<a href="index.php">ログイン</a>してください。';
+            }
+            echo '</td>';
+            echo '</tr>';
+        }
+
+        echo '</table>';
+    ?>
+</body>
+</html>

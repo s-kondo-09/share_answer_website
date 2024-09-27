@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>投稿</title>
+    <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="style/post_review.css">
+    <link rel="stylesheet" href="style/header.css">
+    <link rel="stylesheet" href="style/footer.css">
+    <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <script src="script/main.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="header-left">
+            <i class="fa-solid fa-book fa-3x" onclick="redirectToUserPage()"></i>
+            <a href="add_book.html">本を追加する</a>
+            <a href="post_review.html">レビューを投稿する</a>
+            <a href="post_answer.html">解答を投稿する</a>
+            <a href="disp_review.html">レビューを見る</a>
+            <a href="disp_answer.html">解答を見る</a>
+        </div>
+        <div class="header-right">
+            <a href="index.php?action=logout" onclick="return confirmLogout();">ログアウト</a>
+        </div>
+    </header>
+    <br>
+
+    <form action="" method="post" enctype="multipart/form-data">
+        <select name="bookID" required>
+            <option value="" disabled selected>本のタイトルを選択</option>
+        </select><br>
+        <label><input type="checkbox">詳細検索</label>
+        <textarea name="review"
+            placeholder="レビューを入力してください"></textarea><br>
+        画像を追加
+        <input type="file" name="bookimg"><br>
+        <input type="hidden" name="id_ud_in">
+        <input type="submit" name="submit" value="投稿">
+    </form>
+
+    <!-- 編集フォーム -->
+    <form action="" method="post">
+        <select name="id_ud">
+            <option value="" disabled selected>編集対象番号</option>
+        </select>
+        <input type="submit" name="submit_ud" value="編集">
+    </form>
+
+    <!-- 投稿履歴の表示 -->
+    <h1>投稿履歴</h1>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>サービス名</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
+    <link rel="stylesheet" href="style/index.css">
+    <link rel="stylesheet" href="style/header.css">
+    <link rel="stylesheet" href="style/footer.css">
+    <script src="script/main.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="header-left">
+            <i class="fa-solid fa-book fa-3x" onclick="redirectToUserPage()"></i>
+            <a href="add_book.html">本を追加する</a>
+            <a href="post_review.html">レビューを投稿する</a>
+            <a href="post_answer.html">解答を投稿する</a>
+            <a href="disp_review.html">レビューを見る</a>
+            <a href="disp_answer.html">解答を見る</a>
+        </div>
+        <div class="header-right">
+            <a href="index.php?action=logout" onclick="return confirmLogout();">ログアウト</a>
+        </div>
+    </header>
+
+    <div class="top">
+        <div class="top-contents">
+            <h1>「できた！」を未来の読者へ</h1>
+        </div>
+    </div>
+
+    <div class="contents">
+        <h2>新規登録・ログイン</h2>
+        <h3>サービスを利用するには新規登録またはログインを行ってください。</h3>
+
+        <h2>新規登録</h2>
+        <form action="" method="post">
+            <input type="text" name="name_new" placeholder="アカウント名" required>
+            <input type="password" name="password_new" placeholder="パスワード" required>
+            <input type="submit" name="submit" value="新規登録">
+        </form>
+        <h2>ログイン</h2>
+        <form action="" method="post">
+            <input type="text" name="name_login" placeholder="アカウント名" required>
+            <input type="password" name="password_login" placeholder="パスワード" required>
+            <input type="submit" name="submit" value="ログイン">
+        </form>
+
+        <div class="disp">
+            <h2>最近追加された本</h2>
+            <div class="book-covers">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <ul>
+            <li><a href="#">このサイトについて</a></li>
+            <li><a href="#">お問い合わせ先</a></li>
+            <li><a href="#">管理者用ページ</a></li>
+        </ul>
+    </footer>
+</body>
+
+</html>

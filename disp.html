@@ -1,0 +1,114 @@
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>disp</title>
+    </head>
+
+    <body>
+        <h1>レビュー一覧</h1>
+        <?php
+            //データベース設定
+            require_once("db_password.php");
+
+            session_start();
+            $name = $_SESSION["username"]; // セッションからユーザー名を取得
+
+            // いいね処理
+            if (isset($_POST['like'])) {
+                $post_id = $_POST['post_id'];
+
+                // 既にいいねしているか確認
+                $sql = 'SELECT * FROM LIKES WHERE user_id=:user_id AND post_id=:post_id';
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':user_id', $name, PDO::PARAM_STR);
+                $stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
+                $stmt->execute();
+                $like = $stmt->fetch();
+
+                if ($like) {
+                    // いいねを取り消し
+                    $sql = 'DELETE FROM LIKES WHERE id=:id';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->bindParam(':id', $like['id'], PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    // 投稿のいいね数を減らす
+                    $sql = 'UPDATE DB6 SET good = good - 1 WHERE id = :post_id';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
+                    $stmt->execute();
+                } else {
+                    // いいねを追加
+                    $sql = 'INSERT INTO LIKES (user_id, post_id, liked) VALUES (:user_id, :post_id, 1)';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->bindParam(':user_id', $name, PDO::PARAM_STR);
+                    $stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
+                    $stmt->execute();
+
+                    // 投稿のいいね数を増やす
+                    $sql = 'UPDATE DB6 SET good = good + 1 WHERE id = :post_id';
+                    $stmt = $pdo->prepare($sql);
+                    $stmt->bindParam(':post_id', $post_id, PDO::PARAM_INT);
+                    $stmt->execute();
+                }
+            }
+
+            // 投稿一覧を取得
+            $sql = 'SELECT DB6.*, BOOK.booktitle, BOOK.author, BOOK.publisher 
+                    FROM DB6 
+                    JOIN BOOK ON DB6.bookID = BOOK.id';
+            $stmt = $pdo->query($sql);
+            $results_dp = $stmt->fetchAll();   
+
+            echo "<br>";
+            echo "<br>";
+            echo '<table border="1">
+            <tr>
+            <th>投稿番号</th>
+            <th>投稿者</th>
+            <th>タイトル</th>
+            <th>著者</th>
+            <th>出版社</th>
+            <th>画像</th>
+            <th>レビュー</th>
+            <th>いいね</th>
+            <th>投稿日時</th>
+            <th>操作</th>
+            </tr>';
+
+            foreach ($results_dp as $row) {
+                $filename_dp = htmlspecialchars($row["bookimg"]);
+
+                echo '<tr>';
+                echo '<td>' . htmlspecialchars($row["id"]) . '</td>';
+                echo '<td>' . htmlspecialchars($row["name"]) . '</td>';
+                echo '<td>' . htmlspecialchars($row["booktitle"]) . '</td>';
+                echo '<td>' . htmlspecialchars($row["author"]) . '</td>';
+                echo '<td>' . htmlspecialchars($row["publisher"]) . '</td>';
+                echo '<td>';
+                if (!empty($filename_dp)) {
+                    $_SESSION["imgname"] = $filename_dp;
+                    echo '<a href="./picture_disp.php">画像を見る</a>';
+                } else {
+                    echo "画像なし";
+                }
+                echo '</td>';
+                echo '<td>' . htmlspecialchars($row["review"]) . '</td>';
+                echo '<td>' . nl2br(htmlspecialchars($row["good"])) . '</td>';
+                echo '<td>' . htmlspecialchars($row["pdate"]) . '</td>';
+                echo '<td>';
+                echo '<form action="" method="post">';
+                echo '<input type="hidden" name="post_id" value="' . htmlspecialchars($row["id"]) . '">';
+                echo '<input type="submit" name="like" value="いいね">';
+                echo '</form>';
+                echo '</td>';
+                echo '</tr>';
+            }
+
+            echo '</table>';
+            echo '<hr>';
+        ?>
+        <a href="menu.php">戻る</a>
+    </body>
+    </html>

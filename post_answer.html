@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>解答投稿</title>
+    <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="style/post_answer.css">
+    <link rel="stylesheet" href="style/header.css">
+    <link rel="stylesheet" href="style/footer.css">
+    <script type="text/javascript" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+    <script src="script/main.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="header-left">
+            <i class="fa-solid fa-book fa-3x" onclick="redirectToUserPage()"></i>
+            <a href="add_book.html">本を追加する</a>
+            <a href="post_review.html">レビューを投稿する</a>
+            <a href="post_answer.html">解答を投稿する</a>
+            <a href="disp_review.html">レビューを見る</a>
+            <a href="disp_answer.html">解答を見る</a>
+        </div>
+        <div class="header-right">
+        </div>
+    </header>
+    <br>
+    <!-- 解答投稿フォーム -->
+    <form action="" method="post">
+        <select name="bookID" required>
+            <option value="" disabled selected>本のタイトルを選択</option>
+
+        </select><br>
+        <input type="text" name="page" placeholder="ページ数"><br>
+        <input type="text" name="problemNum" placeholder="問題番号"><br>
+        <textarea name="answer" placeholder="解答を入力してください" required></textarea><br>
+        <input type="submit" name="submit" value="投稿">
+    </form>
+
+    <!-- 投稿履歴の表示 -->
+    <h1>投稿履歴</h1>
+</body>
+</html>

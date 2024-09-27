@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>picture</title>
+</head>
+
+<body>
+    <?php
+        session_start();
+        $filename = $_SESSION["imgname"];
+        $path = $filename;
+        ?>
+        <img src="<?php echo $path; ?>" alt="<?php echo $filename; ?>">
+        <?php
+    ?>
+</body>
+</html>

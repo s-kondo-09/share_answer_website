@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>本の一覧</title>
+    <link href="https://use.fontawesome.com/releases/v6.5.2/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="style/disp_answer.css">
+    <link rel="stylesheet" href="style/header.css">
+    <link rel="stylesheet" href="style/footer.css">
+    <script src="script/main.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="header-left">
+            <i class="fa-solid fa-book fa-3x" onclick="redirectToUserPage()"></i>
+            <a href="add_book.html">本を追加する</a>
+            <a href="post_review.html">レビューを投稿する</a>
+            <a href="post_answer.html">解答を投稿する</a>
+            <a href="disp_review.html">レビューを見る</a>
+            <a href="disp_answer.html">解答を見る</a>
+        </div>
+        <div class="header-right">
+            <a href="index.php?action=logout" onclick="return confirmLogout();">ログアウト</a>
+        </div>
+    </header>
+
+    <h1>本の一覧</h1>
+    <?php
+        // データベース設定
+        require_once("db_password.php");
+
+        // 本一覧を取得
+        $sql = 'SELECT BOOK.*, COUNT(ANSWERS.id) AS review_count 
+                FROM BOOK 
+                LEFT JOIN ANSWERS ON BOOK.id = ANSWERS.bookID 
+                GROUP BY BOOK.id 
+                ORDER BY BOOK.pdate DESC';
+        $stmt = $pdo->query($sql);
+        $books = $stmt->fetchAll();
+
+        echo '<div class="book-list">';
+        foreach ($books as $book) {
+            $filename = htmlspecialchars($book["bookimg"]);
+            echo '<div class="book-item">';
+            if (!empty($filename)) {
+                echo '<a href="disp_ans.php?bookID=' . htmlspecialchars($book["id"]) . '">';
+                echo '<img src="' . $filename . '" alt="book cover">';
+                echo '</a>';
+            } else {
+                echo '<a href="disp_ans.php?bookID=' . htmlspecialchars($book["id"]) . '">';
+                echo '<img src="placeholder.png" alt="no image">';
+                echo '</a>';
+            }
+            echo '<div class="book-info">';
+            echo '<p><span class="label">タイトル:</span> <span class="value">' . htmlspecialchars($book["booktitle"]) . '</span></p>';
+            echo '<p><span class="label">著者:</span> <span class="value">' . htmlspecialchars($book["author"]) . '</span></p>';
+            echo '<p><span class="label">出版社:</span> <span class="value">' . htmlspecialchars($book["publisher"]) . '</span></p>';
+            echo '<p><span class="label">解答数:</span> <span class="value">' . htmlspecialchars($book["review_count"]) . '</span></p>';
+            echo '</div>';
+            echo '</div>';
+        }
+        echo '</div>';
+    ?>
+</body>
+</html>
