@@ -8,7 +8,7 @@
 <body>
     <?php
 
-        require_once("admin/db_certification.php");
+        require_once(dirname(__FILE__) . "/../admin/db_certification.php");
 
         $sql = 'DROP TABLE LIKES';
         $stmt = $pdo->query($sql);
