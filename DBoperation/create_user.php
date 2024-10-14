@@ -8,7 +8,7 @@
 <body>
     <?php
 
-        require_once("db_password.php");
+        require_once("admin/db_certification.php");
         $pdo = new PDO($dsn, $user, $password_db, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING));
 
         $sql = "CREATE TABLE IF NOT EXISTS DB_user"

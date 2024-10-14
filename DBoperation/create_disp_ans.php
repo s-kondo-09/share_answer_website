@@ -8,7 +8,7 @@
 <body>
     <?php
         // データベース接続設定
-        require_once("db_password.php");
+        require_once("admin/db_certification.php");
 
         // LIKES_ANSWER テーブルを作成
         $sql = "CREATE TABLE IF NOT EXISTS LIKES_ANSWER"

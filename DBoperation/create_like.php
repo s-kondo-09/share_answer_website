@@ -8,7 +8,7 @@
 <body>
     <?php
 
-        require_once("db_password.php");
+    require_once("admin/db_certification.php");
 
         $sql = "CREATE TABLE IF NOT EXISTS LIKES"
         ." ("
