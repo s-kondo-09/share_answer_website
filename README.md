@@ -1,1 +1,1 @@
-教科書の演習問題の解答を共有するWebサイトです。
+This is a website for sharing solutions to textbook exercises.
